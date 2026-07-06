@@ -1,27 +1,79 @@
+-- Use role
+use role accountadmin;
+
 -- Create database
-create database customer;
+create or replace database gcs_snowpipe;
 
--- Use database
-use customer;
-
--- Create schema
-create schema target;
-
--- Create table
-create table target.customer_csv (
-	customer_pk number(38,0),
-	salutation varchar(10),
-	first_name varchar(20),
-	last_name varchar(30),
-	gender varchar(1),
-	marital_status varchar(1),
-	day_of_birth date,
-	birth_country varchar(60),
-	email_address varchar(50),
-	city_name varchar(60),
-	zip_code varchar(10),
-	country_name varchar(20),
-	gmt_timezone_offset number(10,2),
-	preferred_cust_flag boolean,
-	registration_time timestamp_ltz(9)
+-- Create table 
+create or replace table snowpipe(
+    order_id int,
+    product varchar(20),
+    quantity int,
+    order_status varchar(30),
+    order_date date
 );
+
+-- Create a Cloud Storage Integration in Snowflake
+-- Integration means creating config based secure access
+create or replace storage integration gcs_bucket
+ type = external_stage
+ storage_provider = gcs
+ enabled = true
+ storage_allowed_locations = ('gcs://gcs_bucket_snowpipe_demo/');
+
+
+-- Retrieve the Cloud Storage Service Account for your snowflake account
+desc storage integration gcs_bucket;
+
+-- Paste service account here for Storage bucket
+-- knh800000@gcpuscentral1-1dfa.iam.gserviceaccount.com
+
+-- Stage means reference to a specific external location where data will arrive
+create or replace stage gcs_stage
+  url = 'gcs://gcs_bucket_snowpipe_demo/'
+  storage_integration = gcs_bucket;
+
+-- Show stages
+show stages;
+
+-- check stage
+list @gcs_stage;
+
+-- Create PUB-SUB Topic and Subscription
+-- gsutil notification create -t <topic> -f json gs://<bucket_name>/
+-- snowflake_subscription
+
+create or replace notification integration notification_snowflake
+ type = queue
+ notification_provider = gcp_pubsub
+ enabled = true
+ gcp_pubsub_subscription_name = 'projects/superb-shelter-403306/subscriptions/Snowpipe_sub';
+
+-- Describe integration
+desc integration notification_snowflake;
+
+-- Service account for PUB-SUB
+-- koh800000@gcpuscentral1-1dfa.iam.gserviceaccount.com
+
+-- Create Snow Pipe
+
+Create or replace pipe gcs_snowpipe
+auto_ingest = true
+integration = notification_snowflake
+as
+copy into snowpipe
+from @gcs_stage
+file_format = (type = 'CSV');
+
+-- Show pipes
+show pipes;
+
+-- Check the status of pipe
+select system$pipe_status('gcs_snowpipe');
+
+-- Check the history of ingestion
+Select * 
+from table(information_schema.copy_history(table_name=>'snowpipe', start_time=> dateadd(hours, -1, current_timestamp())));
+
+-- Terminate a pipe
+drop pipe gcs_snowpipe;
