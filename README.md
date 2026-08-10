@@ -27,3 +27,29 @@ Snowflake most commonly refers to Snowflake Inc., a prominent cloud-based data p
 
 ---
 
+# 𝐒𝐧𝐨𝐰𝐟𝐥𝐚𝐤𝐞 𝐕𝐢𝐞𝐰𝐬 𝐄𝐱𝐩𝐥𝐚𝐢𝐧𝐞𝐝 – 𝐄𝐯𝐞𝐫𝐲𝐭𝐡𝐢𝐧𝐠 𝐘𝐨𝐮 𝐍𝐞𝐞𝐝 𝐭𝐨 𝐊𝐧𝐨𝐰
+
+- Views are one of the most powerful features in Snowflake. They help simplify complex SQL queries, improve security, promote code reusability, and provide a consistent way to access data without modifying the underlying tables.
+Whether you're preparing for a Snowflake interview or building enterprise data pipelines, understanding the different types of views is essential.
+- In this cheat sheet, you'll learn:
+- What a Snowflake View is and how it works as a virtual table
+- The differences between Standard Views, Secure Views, and Materialized Views
+- SQL syntax to create each type of view
+- Practical examples for Standard, Secure, and Materialized Views
+- A feature-by-feature comparison covering storage, performance, security, and refresh behavior
+- How to query, join, and drop views in Snowflake
+- Materialized View refresh options and when to use them
+- Common real-world use cases for simplifying business logic, enforcing security, improving reporting performance, and reusing SQL across teams
+## Important interview points, including storage behavior, automatic refresh, and access requirements
+Choosing the right type of view can make your data platform more secure, easier to maintain, and significantly faster for reporting and analytics.
+## 💬 Which type of Snowflake View do you use the most?
+- 🔹 Standard View
+- 🔹 Secure View
+- 🔹 Materialized View
+- 🔹 Learning Snowflake
+
+<img width="1615" height="1050" alt="image" src="https://github.com/user-attachments/assets/5949bd9e-0b4b-444d-ba42-ebe76f5f8c4e" />
+
+---
+
+
